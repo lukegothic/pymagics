@@ -1,7 +1,7 @@
-import requests
+from requests_cache import CachedSession
 from .decklist import Decklist
 
-#TODO: exceptcions en base
+#TODO: exceptcions en base project
 
 class ParamException(Exception):
   pass
@@ -12,8 +12,9 @@ class NotFoundException(Exception):
 def get_list(cube_name=None):
   if cube_name is None:
     raise ParamException("cubename param is required")
+  session = CachedSession()
   url = "https://cubecobra.com/cube/download/plaintext/{}".format(cube_name)
-  r = requests.get(url)
+  r = session.get(url)
   if r.url == url:
     cards = r.text.splitlines()
     deck = Decklist(cards)
