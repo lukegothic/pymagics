@@ -19,6 +19,15 @@ class Decklist:
                 else:
                     self.main[card] = quantity
 
+    def toCards(self):
+        ret = []
+        for obj in [self.main, self.sideboard, self.commander]:
+            cards = []   
+            for card, q in obj.items():
+                cards.extend([card] * q)
+            ret.append(cards)
+        return ret
+
 # def from_file(filename=None):
 #     if filename is None:
 #         root = tk.Tk()
