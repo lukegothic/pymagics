@@ -3,19 +3,20 @@ from pyluke import array
 from lxml import etree
 
 class MCPOrder:
-  def __init__(self, bracket=612, stock="(S30) Standard Smooth", foil=False, cardback="1LrVX0pUcye9n_0RtaDNVl2xPrQgn7CYf", lists=[]):
+  def __init__(self, bracket=612, stock="(S30) Standard Smooth", foil=False, cardback="1LrVX0pUcye9n_0RtaDNVl2xPrQgn7CYf", optimized=True, lists=[]):
     self.quantity = None
     self.bracket = bracket
     self.stock = stock
     self.foil = "true" if foil else "false"
     self.fronts = []
     self.backs = []
+    self.optimized = optimized
     if len(lists) > 0:
       self.fill(lists)
     self.cardback = cardback
 
   # TODO: metodo fill con parametro optimize dentro que coja 1, 2, 3 o 4 listas y las optimize o no
-  def fill(self, lists, optimize=False):
+  def fill(self, lists):
     match len(lists):
       case 0:
         raise Exception("At least one list must be provided")
