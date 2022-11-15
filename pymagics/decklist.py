@@ -19,6 +19,7 @@ class Decklist:
                 else:
                     self.main[card] = quantity
 
+    # devuelve [[main_cards],[sideboard_cards],[commander_cards]]
     def toCards(self):
         ret = []
         for obj in [self.main, self.sideboard, self.commander]:
