@@ -122,7 +122,7 @@ class MCPOrder:
     self.fronts = [o[0] for o in out]
     self.backs = [o[1] for o in out]
 
-  def generate_xml(self, local_path=None):
+  def generate_xml(self, local_path=None, suffix=None):
     root = etree.Element("order")
     # details
     details = etree.Element("details")
@@ -147,7 +147,7 @@ class MCPOrder:
         if not c is None:
           card = etree.Element("card")
           id = etree.Element("id")
-          id.text = c if local_path is None else "{}/{}.jpg".format(local_path, c)
+          id.text = c if local_path is None else "{}\\{}{}".format(local_path, c, suffix)
           card.append(id)
           slots = etree.Element("slots")
           slots.text = str(slot)
@@ -156,6 +156,6 @@ class MCPOrder:
       root.append(container)
     # cardback
     cardback = etree.Element("cardback")
-    cardback.text = self.cardback if local_path is None else "{}/{}.jpg".format(local_path, self.cardback)
+    cardback.text = self.cardback if local_path is None else "{}\\{}".format(local_path, self.cardback)
     root.append(cardback)
     return etree.tostring(root)
