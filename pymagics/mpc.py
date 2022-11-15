@@ -122,7 +122,7 @@ class MCPOrder:
     self.fronts = [o[0] for o in out]
     self.backs = [o[1] for o in out]
 
-  def generate(self):
+  def generate_xml(self):
     root = etree.Element("order")
     # details
     details = etree.Element("details")

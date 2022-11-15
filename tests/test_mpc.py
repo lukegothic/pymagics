@@ -24,5 +24,5 @@ class TestDecklist(unittest.TestCase):
         b = ["loto", "verdura", "perr", "alcachofa"]
         c = ["papas", "backend", "verdura"]
         mpc_order = mpc.MCPOrder(lists=[a, b, c])
-        g = mpc_order.generate()
+        g = mpc_order.generate_xml()
         self.assertIsNotNone(g)
