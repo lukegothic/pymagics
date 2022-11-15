@@ -156,6 +156,6 @@ class MCPOrder:
       root.append(container)
     # cardback
     cardback = etree.Element("cardback")
-    cardback.text = self.cardback if local_path is None else "{}\\{}".format(local_path, self.cardback)
+    cardback.text = self.cardback
     root.append(cardback)
     return etree.tostring(root)
