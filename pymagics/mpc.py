@@ -122,7 +122,7 @@ class MCPOrder:
     self.fronts = [o[0] for o in out]
     self.backs = [o[1] for o in out]
 
-  def generate_xml(self):
+  def generate_xml(self, local_path=None):
     root = etree.Element("order")
     # details
     details = etree.Element("details")
@@ -139,35 +139,23 @@ class MCPOrder:
     foil.text = self.foil
     details.append(foil)
     root.append(details)
-    # fronts
+    # fronts y backs
     # TODO: si no optimizado puede que haya una carta en varias posiciones, controlar!
-    fronts = etree.Element("fronts")
-    for i, front in enumerate(self.fronts):
-      if not front is None:
-        card = etree.Element("card")
-        id = etree.Element("id")
-        id.text = front
-        card.append(id)
-        slots = etree.Element("slots")
-        slots.text = str(i)
-        card.append(slots)
-        fronts.append(card)
-    root.append(fronts)
-    # backs
-    backs = etree.Element("backs")
-    for i, back in enumerate(self.backs):
-      if not back is None:
-        card = etree.Element("card")
-        id = etree.Element("id")
-        id.text = front
-        card.append(id)
-        slots = etree.Element("slots")
-        slots.text = str(i)
-        card.append(slots)
-        backs.append(card)
-    root.append(backs)
+    for icol, col in enumerate([self.fronts, self.backs]):
+      container = etree.Element("fronts" if icol == 0 else "backs")
+      for slot, c in enumerate(col):
+        if not c is None:
+          card = etree.Element("card")
+          id = etree.Element("id")
+          id.text = c if local_path is None else "{}/{}.jpg".format(local_path, c)
+          card.append(id)
+          slots = etree.Element("slots")
+          slots.text = str(slot)
+          card.append(slots)
+          container.append(card)
+      root.append(container)
     # cardback
     cardback = etree.Element("cardback")
-    cardback.text = self.cardback
+    cardback.text = self.cardback if local_path is None else "{}/{}.jpg".format(local_path, self.cardback)
     root.append(cardback)
     return etree.tostring(root)
