@@ -49,3 +49,9 @@ class TestDecklist(unittest.TestCase):
         mpc_order = mpc.MCPOrder(lists=[a, b, c, d])
         g = mpc_order.generate_xml()
         self.assertIsNotNone(g)
+
+    def test_utf8(self):
+        a = ["Dandân", "Junún Efreet"]
+        mpc_order = mpc.MCPOrder(lists=[a])
+        g = mpc_order.generate_xml()
+        self.assertIsNotNone(g)
