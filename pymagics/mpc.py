@@ -175,5 +175,5 @@ class MCPOrder:
     cardback = etree.Element("cardback")
     cardback.text = self.cardback
     root.append(cardback)
-    s = etree.tostring(root)
+    s = etree.tostring(root, encoding="utf-8")
     return s
