@@ -15,6 +15,7 @@ def get_list(cube_name=None):
   session = CachedSession()
   url = "https://cubecobra.com/cube/download/plaintext/{}".format(cube_name)
   r = session.get(url)
+  r.encoding = "utf-8"
   if r.url == url:
     cards = r.text.splitlines()
     deck = Decklist(cards)

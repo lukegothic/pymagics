@@ -24,7 +24,7 @@ class TestCubeCobra(unittest.TestCase):
             cubecobra.get_list()
 
     def test_get_list_ok(self):
-        res = cubecobra.get_list(cube_name="modovintage")
+        res = cubecobra.get_list(cube_name="19gq7")
         self.assertTrue(isinstance(res, decklist.Decklist))
 
     def test_get_list_error(self):
