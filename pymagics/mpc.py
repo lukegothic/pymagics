@@ -21,7 +21,7 @@ class MCPOrder:
       case 0:
         raise Exception("At least one list must be provided")
       case 1:
-        self.fill_simple(lists[0])
+        self.fronts = [c for c in lists[0]]
       case 2:
         self.fill_fromVennDistribution(VennDistribution2(set(lists[0]), set(lists[1])))
       case 3:
@@ -30,9 +30,6 @@ class MCPOrder:
         self.fill_fromVennDistribution(VennDistribution4(set(lists[0]), set(lists[1]), set(lists[2]), set(lists[3])))
       case _:
         raise Exception("Unexpected number of lists provided")
-  
-  def fill_simple(self, list_):
-    self.fronts = [c for c in list_]
 
   #in: VennDistribution
   #out: array of arrays [[front, back], [front, back], [front, back]...]
