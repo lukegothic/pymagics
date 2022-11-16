@@ -142,9 +142,12 @@ class MCPOrder:
     # fronts y backs
     # TODO: si no optimizado puede que haya una carta en varias posiciones, controlar!
     for icol, col in enumerate([self.fronts, self.backs]):
-      container = etree.Element("fronts" if icol == 0 else "backs")
+      frontsorbacks = "fronts" if icol == 0 else "backs"
+      print("Generando [{}]".format(frontsorbacks))
+      container = etree.Element(frontsorbacks)
       for slot, c in enumerate(col):
         if not c is None:
+          print("[{}] [{}]: {}".format(frontsorbacks, slot, c))
           card = etree.Element("card")
           id = etree.Element("id")
           id.text = c if local_path is None else "{}\\{}{}".format(local_path, c, suffix)
@@ -153,9 +156,12 @@ class MCPOrder:
           slots.text = str(slot)
           card.append(slots)
           container.append(card)
+        else:
+          print("None value in [{}] [{}]: {}".format(frontsorbacks, slot, c))
       root.append(container)
     # cardback
     cardback = etree.Element("cardback")
     cardback.text = self.cardback
     root.append(cardback)
-    return etree.tostring(root)
+    s = etree.tostring(root)
+    return s
