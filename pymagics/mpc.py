@@ -1,4 +1,4 @@
-from pyluke.venn import VennDistribution3, VennDistribution4, VennDistribution
+from pyluke.venn import VennDistribution2, VennDistribution3, VennDistribution4, VennDistribution
 from pyluke import array
 from lxml import etree
 
@@ -21,23 +21,39 @@ class MCPOrder:
       case 0:
         raise Exception("At least one list must be provided")
       case 1:
-        # simple put on front
-        pass
+        self.fill_simple(lists[0])
       case 2:
-        # simple intersection + a b sets
-        pass
+        self.fill_fromVennDistribution(VennDistribution2(set(lists[0]), set(lists[1])))
       case 3:
-        # venn
         self.fill_fromVennDistribution(VennDistribution3(set(lists[0]), set(lists[1]), set(lists[2])))
       case 4:
         self.fill_fromVennDistribution(VennDistribution4(set(lists[0]), set(lists[1]), set(lists[2]), set(lists[3])))
       case _:
         raise Exception("Unexpected number of lists provided")
   
+  def fill_simple(self, list_):
+    self.fronts = [c for c in list_]
+
   #in: VennDistribution
   #out: array of arrays [[front, back], [front, back], [front, back]...]
   #     front will always have value, back can be None
   def fill_fromVennDistribution(self, venn: VennDistribution):
+    out = []
+
+    # 2 sets
+    # ab  -> None
+    # a   -> None
+    # b   -> None
+    if isinstance(venn, VennDistribution2):
+      # union
+      for i in venn.union:
+        out.append([i, None])
+      # x sets
+      for i in venn.sets.a:
+        out.append([i, None])
+      for i in venn.sets.b:
+        out.append([i, None])
+
     # 3 sets
     # abc -> empty
     # ab  -> c
@@ -46,8 +62,7 @@ class MCPOrder:
     # a   -> bc | b | c
     # b   -> ac | a | c
     # c   -> ab | a | b
-    out = []
-    if isinstance(venn, VennDistribution3):
+    elif isinstance(venn, VennDistribution3):
       # union
       for i in venn.union:
         out.append([i, None])
