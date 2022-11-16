@@ -1,6 +1,7 @@
 from pyluke.venn import VennDistribution2, VennDistribution3, VennDistribution4, VennDistribution
 from pyluke import array
 from lxml import etree
+import mappers
 
 class MCPOrder:
   def __init__(self, bracket=612, stock="(S30) Standard Smooth", foil=False, cardback="1LrVX0pUcye9n_0RtaDNVl2xPrQgn7CYf", optimized=True, lists=[]):
@@ -163,7 +164,7 @@ class MCPOrder:
             print("[{}] [{}]: {}".format(frontsorbacks, slot, c))
             card = etree.Element("card")
             id = etree.Element("id")
-            id.text = c if local_path is None else "{}\\{}{}".format(local_path, c, suffix)
+            id.text = c if local_path is None else "{}\\{}{}".format(local_path, mappers.cardname_to_filename(c), suffix)
             card.append(id)
             slots = etree.Element("slots")
             slots.text = str(slot)
