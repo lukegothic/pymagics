@@ -1,7 +1,7 @@
 from pyluke.venn import VennDistribution2, VennDistribution3, VennDistribution4, VennDistribution
 from pyluke import array
 from lxml import etree
-import mappers
+from . import mappers
 
 class MCPOrder:
   def __init__(self, bracket=612, stock="(S30) Standard Smooth", foil=False, cardback="1LrVX0pUcye9n_0RtaDNVl2xPrQgn7CYf", optimized=True, lists=[]):
@@ -125,11 +125,11 @@ class MCPOrder:
       for i in venn.sets.a:
         out.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.sets.d, venn.intersections.bc, venn.intersections.bd, venn.intersections.cd, venn.intersections.bcd)])
       for i in venn.sets.b:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.sets.d, venn.intersections.ac, venn.intersections.ad, venn.intersections.cd, venn.intersections.acd)])
+        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.c, venn.sets.d, venn.intersections.ac, venn.intersections.ad, venn.intersections.cd, venn.intersections.acd)])
       for i in venn.sets.c:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.sets.d, venn.intersections.ab, venn.intersections.ad, venn.intersections.bd, venn.intersections.abd)])
+        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.sets.d, venn.intersections.ab, venn.intersections.ad, venn.intersections.bd, venn.intersections.abd)])
       for i in venn.sets.d:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.sets.d, venn.intersections.ab, venn.intersections.ac, venn.intersections.bc, venn.intersections.abc)])
+        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.sets.c, venn.intersections.ab, venn.intersections.ac, venn.intersections.bc, venn.intersections.abc)])
     else:
       raise Exception("Invalid object or VennDistribution supplied")
     self.fronts = [o[0] for o in out]
