@@ -137,9 +137,9 @@ class MCPOrder:
     details = self.generate_xml_details(cards)
     order.append(details)
     (fronts, backs) = self.generate_xml_cards(cards, local_path, suffix)
-    if fronts:
+    if not fronts is None:
       order.append(fronts)
-    if backs:
+    if not backs is None:
       order.append(backs)
     cardback = self.generate_xml_cardback()
     order.append(cardback)
@@ -166,10 +166,10 @@ class MCPOrder:
     backs = etree.Element("backs")
     for slot, card in enumerate(cards):
       front = self.generate_xml_card(card[0], slot, local_path, suffix)
-      if front:
+      if not front is None:
         fronts.append(front)
       back = self.generate_xml_card(card[1], slot, local_path, suffix)
-      if back:
+      if not back is None:
         backs.append(back)
     return (fronts if len(fronts) > 0 else None, backs if len(backs) > 0 else None)
     
