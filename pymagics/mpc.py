@@ -9,8 +9,7 @@ class MCPOrder:
     self.bracket = bracket
     self.stock = stock
     self.foil = "true" if foil else "false"
-    self.fronts = []
-    self.backs = []
+    self.order = []
     self.optimized = optimized
     if len(lists) > 0:
       self.fill(lists)
@@ -22,7 +21,7 @@ class MCPOrder:
       case 0:
         raise Exception("At least one list must be provided")
       case 1:
-        self.fronts = [c for c in lists[0]]
+        self.order = [[c, None] for c in lists[0]]
       case 2:
         self.fill_fromVennDistribution(VennDistribution2(set(lists[0]), set(lists[1])))
       case 3:
@@ -36,8 +35,6 @@ class MCPOrder:
   #out: array of arrays [[front, back], [front, back], [front, back]...]
   #     front will always have value, back can be None
   def fill_fromVennDistribution(self, venn: VennDistribution):
-    out = []
-
     # 2 sets
     # ab  -> None
     # a   -> None
@@ -45,12 +42,12 @@ class MCPOrder:
     if isinstance(venn, VennDistribution2):
       # union
       for i in venn.union:
-        out.append([i, None])
+        self.order.append([i, None])
       # x sets
       for i in venn.sets.a:
-        out.append([i, None])
+        self.order.append([i, None])
       for i in venn.sets.b:
-        out.append([i, None])
+        self.order.append([i, None])
 
     # 3 sets
     # abc -> empty
@@ -63,21 +60,21 @@ class MCPOrder:
     elif isinstance(venn, VennDistribution3):
       # union
       for i in venn.union:
-        out.append([i, None])
+        self.order.append([i, None])
       # xy intersections
       for i in venn.intersections.ab:
-        out.append([i, array.pop_AnyOrNone(venn.sets.c)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.c)])
       for i in venn.intersections.ac:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.b)])
       for i in venn.intersections.bc:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a)])
       # x sets
       for i in venn.sets.a:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.intersections.bc)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.intersections.bc)])
       for i in venn.sets.b:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.c, venn.intersections.ac)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.c, venn.intersections.ac)])
       for i in venn.sets.c:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.intersections.ab)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.intersections.ab)])
 
     # 4 sets
     # abcd  -> empty
@@ -98,49 +95,60 @@ class MCPOrder:
     elif isinstance(venn, VennDistribution4):
       # union
       for i in venn.union:
-        out.append([i, None])
+        self.order.append([i, None])
       # xyz intersections
       for i in venn.intersections.abc:
-        out.append([i, array.pop_AnyOrNone(venn.sets.d)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.d)])
       for i in venn.intersections.abd:
-        out.append([i, array.pop_AnyOrNone(venn.sets.c)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.c)])
       for i in venn.intersections.acd:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.b)])
       for i in venn.intersections.bcd:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a)])
       # xy intersections
       for i in venn.intersections.ab:
-        out.append([i, array.pop_AnyOrNone(venn.sets.c, venn.sets.d, venn.intersections.cd)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.c, venn.sets.d, venn.intersections.cd)])
       for i in venn.intersections.cd:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.intersections.ab)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.intersections.ab)])
       for i in venn.intersections.ac:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.d, venn.intersections.bd)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.d, venn.intersections.bd)])
       for i in venn.intersections.bd:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.c, venn.intersections.ac)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.c, venn.intersections.ac)])
       for i in venn.intersections.ad:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.intersections.bc)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.intersections.bc)])
       for i in venn.intersections.bc:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.d, venn.intersections.ad)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.d, venn.intersections.ad)])
       # x sets
       for i in venn.sets.a:
-        out.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.sets.d, venn.intersections.bc, venn.intersections.bd, venn.intersections.cd, venn.intersections.bcd)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.b, venn.sets.c, venn.sets.d, venn.intersections.bc, venn.intersections.bd, venn.intersections.cd, venn.intersections.bcd)])
       for i in venn.sets.b:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.c, venn.sets.d, venn.intersections.ac, venn.intersections.ad, venn.intersections.cd, venn.intersections.acd)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.c, venn.sets.d, venn.intersections.ac, venn.intersections.ad, venn.intersections.cd, venn.intersections.acd)])
       for i in venn.sets.c:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.sets.d, venn.intersections.ab, venn.intersections.ad, venn.intersections.bd, venn.intersections.abd)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.sets.d, venn.intersections.ab, venn.intersections.ad, venn.intersections.bd, venn.intersections.abd)])
       for i in venn.sets.d:
-        out.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.sets.c, venn.intersections.ab, venn.intersections.ac, venn.intersections.bc, venn.intersections.abc)])
+        self.order.append([i, array.pop_AnyOrNone(venn.sets.a, venn.sets.b, venn.sets.c, venn.intersections.ab, venn.intersections.ac, venn.intersections.bc, venn.intersections.abc)])
     else:
       raise Exception("Invalid object or VennDistribution supplied")
-    self.fronts = [o[0] for o in out]
-    self.backs = [o[1] for o in out]
 
-  def generate_xml(self, local_path=None, suffix=None):
-    root = etree.Element("order")
-    # details
+  def generate_xml_order(self, cards, local_path, suffix):
+    if len(cards) == 0:
+      return None
+    order = etree.Element("order")
+    details = self.generate_xml_details(cards)
+    order.append(details)
+    (fronts, backs) = self.generate_xml_cards(cards, local_path, suffix)
+    if fronts:
+      order.append(fronts)
+    if backs:
+      order.append(backs)
+    cardback = self.generate_xml_cardback()
+    order.append(cardback)
+    return order
+
+  def generate_xml_details(self, cards):
     details = etree.Element("details")
     quantity = etree.Element("quantity")
-    quantity.text = str(len(self.fronts))
+    quantity.text = str(len(cards))
     details.append(quantity)
     bracket = etree.Element("bracket")
     bracket.text = str(self.bracket)
@@ -151,31 +159,47 @@ class MCPOrder:
     foil = etree.Element("foil")
     foil.text = self.foil
     details.append(foil)
-    root.append(details)
-    # fronts y backs
-    # TODO: si no optimizado puede que haya una carta en varias posiciones, controlar!
-    for icol, col in enumerate([self.fronts, self.backs]):
-      if len(col) > 0:
-        frontsorbacks = "fronts" if icol == 0 else "backs"
-        container = etree.Element(frontsorbacks)
-        print("Generando [{}]".format(frontsorbacks))
-        for slot, c in enumerate(col):
-          if not c is None:
-            print("[{}] [{}]: {}".format(frontsorbacks, slot, c))
-            card = etree.Element("card")
-            id = etree.Element("id")
-            id.text = c if local_path is None else "{}\\{}{}".format(local_path, mappers.cardname_to_filename(c), suffix)
-            card.append(id)
-            slots = etree.Element("slots")
-            slots.text = str(slot)
-            card.append(slots)
-            container.append(card)
-          else:
-            print("None value in [{}] [{}]: {}".format(frontsorbacks, slot, c))
-        root.append(container)
-    # cardback
+    return details
+  
+  def generate_xml_cards(self, cards, local_path, suffix):
+    fronts = etree.Element("fronts")
+    backs = etree.Element("backs")
+    for slot, card in enumerate(cards):
+      front = self.generate_xml_card(card[0], slot, local_path, suffix)
+      if front:
+        fronts.append(front)
+      back = self.generate_xml_card(card[1], slot, local_path, suffix)
+      if back:
+        backs.append(back)
+    return (fronts if len(fronts) > 0 else None, backs if len(backs) > 0 else None)
+    
+  def generate_xml_card(self, card, slot, local_path, suffix):
+    if card is None:
+      return None
+    xcard = etree.Element("card")
+    id = etree.Element("id")
+    id.text = card if local_path is None else "{}\\{}{}".format(local_path, mappers.cardname_to_filename(card), suffix)
+    xcard.append(id)
+    slots = etree.Element("slots")
+    slots.text = str(slot)
+    xcard.append(slots)
+    return xcard
+  
+  def generate_xml_cardback(self):
     cardback = etree.Element("cardback")
     cardback.text = self.cardback
-    root.append(cardback)
-    s = etree.tostring(root, encoding=str)
-    return s
+    return cardback
+
+  # standalonefrontonlyorder: genera order aparte para las que solo tienen front
+  def generate_xml(self, local_path=None, suffix=None, standalonefrontsonly=False):
+    if standalonefrontsonly:
+      cards_with_front_and_back = [c for c in self.order if not c[1] is None]
+      cards_with_front = [c for c in self.order if c[1] is None]
+      order_front_and_back = self.generate_xml_order(cards_with_front_and_back, local_path, suffix)
+      order_front = self.generate_xml_order(cards_with_front, local_path, suffix)
+      return (
+        etree.tostring(order_front_and_back, encoding=str) if order_front_and_back else None,
+        etree.tostring(order_front, encoding=str) if order_front else None
+      )
+    else:
+      return etree.tostring(self.generate_xml_order(self.order, local_path, suffix), encoding=str)
