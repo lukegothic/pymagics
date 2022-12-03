@@ -198,8 +198,8 @@ class MCPOrder:
       order_front_and_back = self.generate_xml_order(cards_with_front_and_back, local_path, suffix)
       order_front = self.generate_xml_order(cards_with_front, local_path, suffix)
       return (
-        etree.tostring(order_front_and_back, encoding=str) if order_front_and_back else None,
-        etree.tostring(order_front, encoding=str) if order_front else None
+        etree.tostring(order_front_and_back, encoding=str) if not order_front_and_back is None else None,
+        etree.tostring(order_front, encoding=str) if not order_front is None else None
       )
     else:
       return etree.tostring(self.generate_xml_order(self.order, local_path, suffix), encoding=str)
