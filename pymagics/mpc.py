@@ -178,7 +178,11 @@ class MCPOrder:
       return None
     xcard = etree.Element("card")
     id = etree.Element("id")
-    id.text = card if local_path is None else (local_path / "{}{}".format(mappers.cardname_to_filename(card), suffix)).name
+    if local_path is None:
+      id.text = card
+    else:
+      full_local_path = local_path / "{}{}".format(mappers.cardname_to_filename(card), suffix)
+      id.text = full_local_path.resolve()
     xcard.append(id)
     slots = etree.Element("slots")
     slots.text = str(slot)
