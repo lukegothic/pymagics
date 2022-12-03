@@ -182,7 +182,7 @@ class MCPOrder:
       id.text = card
     else:
       full_local_path = local_path / "{}{}".format(mappers.cardname_to_filename(card), suffix)
-      id.text = full_local_path.resolve()
+      id.text = str(full_local_path)
     xcard.append(id)
     slots = etree.Element("slots")
     slots.text = str(slot)
