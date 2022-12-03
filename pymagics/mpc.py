@@ -191,7 +191,7 @@ class MCPOrder:
   
   def generate_xml_cardback(self):
     cardback = etree.Element("cardback")
-    cardback.text = self.cardback
+    cardback.text = str(self.cardback)
     return cardback
 
   # standalonefrontonlyorder: genera order aparte para las que solo tienen front
