@@ -8,9 +8,11 @@ def get_bulk_cards(t="oracle"):
 
 def decklist_to_scryfall(decklist):
     data = get_bulk_cards()
+    data.sort(key=lambda c: c["released_at"])
     data = [c | c["card_faces"][0] if "card_faces" in c else c for c in data]
     # TODO: lib util toDict(array, key) (INTENTAR RECUPERAR CODIGO)
     data_dict = {}
     for c in data:
       data_dict[c["name"]] = c
     return [data_dict[c.split(" // ")[0]] for c in decklist]
+
